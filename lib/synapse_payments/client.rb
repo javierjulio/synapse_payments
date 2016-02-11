@@ -15,6 +15,7 @@ module SynapsePayments
     # @return [SynapsePayments::Client]
     def initialize(options={})
       @sandbox_mode = true
+      @timeout_options = { write: 2, connect: 5, read: 10 }
 
       options.each do |key, value|
         instance_variable_set("@#{key}", value)
@@ -22,7 +23,6 @@ module SynapsePayments
 
       yield(self) if block_given?
 
-      @timeout_options ||= { write: 2, connect: 5, read: 10 }
       @api_base = @sandbox_mode ? API_TEST : API_LIVE
 
       @users = Users.new(self)
