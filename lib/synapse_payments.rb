@@ -1,9 +1,3 @@
-begin
-  require "mime/types/columnar" # use if available for reduced memory usage
-rescue LoadError
-  require "mime/types"
-end
-
 require "synapse_payments/version"
 require "synapse_payments/error"
 require "synapse_payments/client"

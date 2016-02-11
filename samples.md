@@ -138,7 +138,10 @@ response = user_client.answer_kba(
 #### Attach photo ID or another file type
 
 ```ruby
-response = user_client.attach_file(full_file_path)
+file_contents = File.read('image.png')
+encoded_file = "data:image/png;base64,#{Base64.encode64(file_contents).gsub(/\n/, '')}"
+
+user_client.update(doc: { attachment: encoded_file })
 ```
 
 #### Add a bank account

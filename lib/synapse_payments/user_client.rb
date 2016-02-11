@@ -74,19 +74,6 @@ module SynapsePayments
       @client.patch(path: "/users/#{@user_id}", oauth_key: @oauth_key, fingerprint: @fingerprint, json: data)
     end
 
-    def attach_file(file_path)
-      file_contents = open(file_path) { |f| f.read }
-      file_type = MIME::Types.type_for(file_path).first.content_type
-
-      data = {
-        doc: {
-          attachment: "data:#{file_type};base64,#{Base64.encode64(file_contents).gsub(/\n/, '')}"
-        }
-      }
-
-      @client.patch(path: "/users/#{@user_id}", oauth_key: @oauth_key, fingerprint: @fingerprint, json: data)
-    end
-
     # Adds a bank account by creating a node of node type ACH-US.
     #
     # @param name [String] the name of the account holder
