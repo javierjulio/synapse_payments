@@ -1,13 +1,14 @@
 language: ruby
 rvm:
   - 2.1.5
-  - 2.2.3
+  - 2.2.4
+  - 2.3.0
 before_install: gem install bundler -v 1.10.6
 cache: bundler
 sudo: false
 fast_finish: true
 env:
-  - USER_ID= SYNAPSE_PAYMENTS_CLIENT_ID= SYNAPSE_PAYMENTS_CLIENT_SECRET=
+  - USER_ID= SYNAPSE_PAYMENTS_CLIENT_ID= SYNAPSE_PAYMENTS_CLIENT_SECRET= SYNAPSE_PAYMENTS_FINGERPRINT=
 notifications:
   email:
     on_success: always
