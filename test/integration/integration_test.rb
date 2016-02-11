@@ -3,6 +3,10 @@ require 'test_helper'
 class IntegrationTest < Minitest::Test
 
   def setup
+    # To setup a test user for tests create one in the console with:
+    # result = client.users.create(name: 'John Doe', email: 'john@test.com', phone: '123-456-8790', fingerprint: fingerprint)
+    # And then store the of result[:_id] in the .env file for the USER_ID env var.
+
     skip if ENV['USER_ID'].nil? || ENV['USER_ID'].empty?
 
     disable_vcr!
@@ -14,39 +18,10 @@ class IntegrationTest < Minitest::Test
   end
 
   def teardown
-    skip if ENV['USER_ID'].nil? || ENV['USER_ID'].empty?
-
     @user_id = nil
     @user = nil
     @user_client = nil
     @fingerprint = nil
-
-    enable_vcr!
-  end
-
-  def test_institutions
-    response = authenticated_client.institutions
-
-    assert_equal 16, response.size
-    assert_equal 'Ally', response[0][:bank_name]
-    assert_equal 'Bank of America', response[1][:bank_name]
-  end
-
-  def test_users_all
-    users = authenticated_client.users.all
-
-    assert_equal '200', users[:http_code]
-    assert_equal '0', users[:error_code]
-    assert users[:success]
-    refute_nil users[:users]
-  end
-
-  def test_user_find
-    user = authenticated_client.users.find(@user_id)
-
-    refute_predicate user[:_id], :empty?
-    refute_predicate user[:refresh_token], :empty?
-    refute_predicate user[:legal_names], :empty?
   end
 
   def test_create_user_with_fingerprint_and_data
@@ -167,18 +142,21 @@ class IntegrationTest < Minitest::Test
       # no identity found, validation not possible, submit photo ID
     end
 
-    user = @user_client.attach_file(fixture_path('image.png'))
+    file_contents = File.read(fixture_path('image.png'))
+    payload_data = "data:image/png;base64,#{Base64.encode64(file_contents).gsub(/\n/, '')}"
+
+    user = @user_client.update(doc: { attachment: payload_data })
 
     refute_predicate user[:_id], :empty?
   end
 
   def test_add_bank_account
-    response = @user_client.add_bank_account(name: 'Test Test', account_number: '72347235423', routing_number: '051000017', category: 'PERSONAL', type: 'CHECKING')
+    response = @user_client.add_bank_account(name: 'John Doe', account_number: '72347235423', routing_number: '051000017', category: 'PERSONAL', type: 'CHECKING')
 
     assert response[:success]
     assert_equal 1, response[:nodes].size
     refute_predicate response[:nodes][0][:_id], :empty?
-    assert_equal 'Test Test', response[:nodes][0][:info][:name_on_account]
+    assert_equal 'John Doe', response[:nodes][0][:info][:name_on_account]
     assert_equal 'PERSONAL', response[:nodes][0][:info][:type]
     assert_equal 'CHECKING', response[:nodes][0][:info][:class]
     assert_equal '5423', response[:nodes][0][:info][:account_num]
@@ -189,12 +167,12 @@ class IntegrationTest < Minitest::Test
   end
 
   def test_add_instant_verified_bank_account
-    response = @user_client.add_bank_account(name: 'Test Test', account_number: '123456786', routing_number: '051000017', category: 'PERSONAL', type: 'CHECKING')
+    response = @user_client.add_bank_account(name: 'John Doe', account_number: '123456786', routing_number: '051000017', category: 'PERSONAL', type: 'CHECKING')
 
     assert response[:success]
     assert_equal 1, response[:nodes].size
     refute_predicate response[:nodes][0][:_id], :empty?
-    assert_equal 'Test Test', response[:nodes][0][:info][:name_on_account]
+    assert_equal 'John Doe', response[:nodes][0][:info][:name_on_account]
     assert_equal 'PERSONAL', response[:nodes][0][:info][:type]
     assert_equal 'CHECKING', response[:nodes][0][:info][:class]
     assert_equal '6786', response[:nodes][0][:info][:account_num]
@@ -227,6 +205,12 @@ class IntegrationTest < Minitest::Test
     refute_predicate bank[:mfa][:access_token], :empty?
     refute_predicate bank[:mfa][:message], :empty?
 
+    begin
+    bank = @user_client.verify_mfa(access_token: "afbc123#{bank[:mfa][:access_token]}", answer: 'test_answer')
+rescue SynapsePayments::Error => error
+  puts '',error.response,''
+end
+
     bank = @user_client.verify_mfa(access_token: bank[:mfa][:access_token], answer: 'test_answer')
 
     assert bank[:success]
@@ -236,75 +220,23 @@ class IntegrationTest < Minitest::Test
   end
 
   def test_sending_money
-    data = {
-      type: 'SYNAPSE-US',
-      info: {
-        nickname: 'My First Integration Test Synapse Wallet'
-      },
-      extra: {
-        supp_id: 123456
-      }
-    }
+    response = @user_client.add_bank_account(name: 'John Doe', account_number: '123456786', routing_number: '051000017', category: 'PERSONAL', type: 'CHECKING')
+    bank_node = response[:nodes].first
 
-    node = @user_client.nodes.create(data)
-    first_node = node[:nodes].first
+    nodes = @user_client.nodes.all
+    escrow_node = nodes[:nodes].select { |n| n[:type] == 'SYNAPSE-US' }.first
 
-    data = {
-      type: 'SYNAPSE-US',
-      info: {
-        nickname: 'My Second Integration Test Synapse Wallet'
-      },
-      extra: {
-        supp_id: 12345678
-      }
-    }
-
-    node2 = @user_client.nodes.create(data)
-    second_node = node2[:nodes].first
-
-    transaction = @user_client.send_money(from: first_node[:_id], to: second_node[:_id], to_node_type: 'SYNAPSE-US', amount: 24.00, currency: 'USD', ip_address: '192.168.0.1', supp_id: '123')
+    transaction = @user_client.send_money(from: bank_node[:_id], to: escrow_node[:_id], to_node_type: 'SYNAPSE-US', amount: 2.00, currency: 'USD', ip_address: '192.168.0.1', supp_id: '123')
 
     refute_predicate transaction[:_id], :empty?
-    assert_equal 24.0, transaction[:amount][:amount]
+    assert_equal 2.0, transaction[:amount][:amount]
     assert_equal 'USD', transaction[:amount][:currency]
     assert_equal '192.168.0.1', transaction[:extra][:ip]
     assert_equal '123', transaction[:extra][:supp_id]
-    assert_equal first_node[:_id], transaction[:from][:id]
-    assert_equal second_node[:_id], transaction[:to][:id]
+    assert_equal bank_node[:_id], transaction[:from][:id]
+    assert_equal escrow_node[:_id], transaction[:to][:id]
 
-    @user_client.nodes.delete(first_node[:_id])
-    @user_client.nodes.delete(second_node[:_id])
-  end
-
-  def test_subscriptions
-    response = authenticated_client.subscriptions.create(url: 'http://requestb.in/15zo81v1', scope: ['USERS|PATCH'])
-
-    refute_predicate response[:_id], :empty?
-    assert response[:is_active]
-    assert_equal 'http://requestb.in/15zo81v1', response[:url]
-    assert_equal ['USERS|PATCH'], response[:scope]
-
-    response = authenticated_client.subscriptions.find(response[:_id])
-
-    refute_predicate response[:_id], :empty?
-    assert response[:is_active]
-    assert_equal 'http://requestb.in/15zo81v1', response[:url]
-    assert_equal ['USERS|PATCH'], response[:scope]
-
-    response = authenticated_client.subscriptions.update(response[:_id], is_active: false, url: 'http://requestb.in/15zo81v1', scope: [])
-
-    refute_predicate response[:_id], :empty?
-    refute response[:is_active]
-    assert_equal 'http://requestb.in/15zo81v1', response[:url]
-    assert_predicate response[:scope], :empty?
-
-    response = authenticated_client.subscriptions.all
-
-    assert response[:success]
-    assert response[:page] >= 1
-    assert response[:page_count] >= 0
-    refute_predicate response[:subscriptions], :empty?
-    assert response[:subscriptions_count] >= 1
+    @user_client.nodes.delete(bank_node[:_id])
   end
 
 end

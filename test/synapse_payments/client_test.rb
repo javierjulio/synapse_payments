@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class SynapsePaymentsTest < Minitest::Test
+class ClientTest < Minitest::Test
 
   def test_that_it_has_a_version_number
     refute_nil ::SynapsePayments::VERSION
