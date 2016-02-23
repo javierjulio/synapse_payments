@@ -24,6 +24,10 @@ module SynapsePayments
       @client.delete(path: "/users/#{@user_id}/nodes/#{id}", oauth_key: @oauth_key, fingerprint: @fingerprint)
     end
 
+    def update(id, data)
+      @client.patch(path: "/users/#{@user_id}/nodes/#{id}", oauth_key: @oauth_key, fingerprint: @fingerprint, json: data)
+    end
+
   end
 
 end
