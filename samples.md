@@ -156,6 +156,16 @@ response = user_client.add_bank_account(
 )
 ```
 
+#### Verify Micro Deposits
+
+In the response, check the permission to determine if micro deposit verification was successful.
+
+```ruby
+response = user_client.nodes.update(node_id, micro: [0.1, 0.3])
+```
+
+Note that you have several attempts to verify correct micro deposits but if out of attempts then the node is locked.
+
 #### Bank account login
 
 The following could return a list of nodes (bank accounts) or MFA question.
