@@ -150,7 +150,38 @@ class IntegrationTest < Minitest::Test
     refute_predicate user[:_id], :empty?
   end
 
-  def test_add_bank_account_with_micro_deposit
+  def test_add_bank_account_with_verified_micro_deposit
+    account_number = Time.now.to_i
+
+    response = @user_client.add_bank_account(
+      name: 'John Doe',
+      account_number: account_number,
+      routing_number: '051000017',
+      category: 'PERSONAL',
+      type: 'CHECKING'
+    )
+
+    node = response[:nodes][0]
+
+    assert response[:success]
+    assert_equal 1, response[:nodes].size
+    refute_predicate node[:_id], :empty?
+    assert_equal 'John Doe', node[:info][:name_on_account]
+    assert_equal 'PERSONAL', node[:info][:type]
+    assert_equal 'CHECKING', node[:info][:class]
+    assert_equal account_number.to_s.chars.last(4).join, node[:info][:account_num]
+    assert_equal '0017', node[:info][:routing_num]
+    assert_equal 'ACH-US', node[:type]
+    assert_equal 'CREDIT', node[:allowed]
+
+    response = @user_client.nodes.update(node[:_id], micro: [0.1, 0.1])
+
+    assert_equal 'CREDIT-AND-DEBIT', response[:allowed]
+
+    @user_client.nodes.delete(node[:_id])
+  end
+
+  def test_add_bank_account_with_incorrect_micro_deposit_and_locked_node
     account_number = Time.now.to_i
 
     response = @user_client.add_bank_account(
@@ -177,16 +208,41 @@ class IntegrationTest < Minitest::Test
     error = assert_raises(SynapsePayments::Error::Conflict) {
       @user_client.nodes.update(node[:_id], micro: [0.1, 0.3])
     }
-
-    assert_instance_of SynapsePayments::Error::Conflict, error
     assert_kind_of SynapsePayments::Error::ClientError, error
     assert error.message =~ /incorrect/i
     # If all tries used up then node permission is LOCKED.
     assert error.message =~ /\d{1,}\s{1,}tries\s{1,}left/i
 
-    response = @user_client.nodes.update(node[:_id], micro: [0.1, 0.1])
+    error = assert_raises(SynapsePayments::Error::Conflict) {
+      @user_client.nodes.update(node[:_id], micro: [0.1, 0.3])
+    }
+    assert error.message =~ /3 tries left/i
 
-    assert_equal 'CREDIT-AND-DEBIT', response[:allowed]
+    error = assert_raises(SynapsePayments::Error::Conflict) {
+      @user_client.nodes.update(node[:_id], micro: [0.1, 0.3])
+    }
+    assert error.message =~ /2 tries left/i
+
+    error = assert_raises(SynapsePayments::Error::Conflict) {
+      @user_client.nodes.update(node[:_id], micro: [0.1, 0.3])
+    }
+    assert error.message =~ /1 tries left/i
+
+    error = assert_raises(SynapsePayments::Error::Conflict) {
+      @user_client.nodes.update(node[:_id], micro: [0.1, 0.3])
+    }
+    assert error.message =~ /0 tries left/i
+
+    # Despite 0 tries in previous the node is not locked unless another call is made.
+    response = @user_client.nodes.find(node[:_id])
+    assert_equal 'CREDIT', response[:allowed]
+
+    error = assert_raises(SynapsePayments::Error::Conflict) {
+      @user_client.nodes.update(node[:_id], micro: [0.1, 0.3])
+    }
+
+    response = @user_client.nodes.find(node[:_id])
+    assert_equal 'LOCKED', response[:allowed]
 
     @user_client.nodes.delete(node[:_id])
   end
