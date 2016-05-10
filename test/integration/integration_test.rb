@@ -77,7 +77,18 @@ class IntegrationTest < Minitest::Test
       amount: 24.00,
       currency: 'USD',
       ip_address: '192.168.0.1',
-      supp_id: '4321'
+      extra: {
+        supp_id: '4321'
+      },
+      fees: [
+        {
+          fee: 0.05,
+          note: 'Business Fee',
+          to: {
+            id: '559339aa86c273605ccd35df'
+          }
+        }
+      ]
     )
   end
 
@@ -286,12 +297,6 @@ class IntegrationTest < Minitest::Test
     refute_predicate bank[:mfa][:access_token], :empty?
     refute_predicate bank[:mfa][:message], :empty?
 
-    begin
-    bank = @user_client.verify_mfa(access_token: "afbc123#{bank[:mfa][:access_token]}", answer: 'test_answer')
-rescue SynapsePayments::Error => error
-  puts '',error.response,''
-end
-
     bank = @user_client.verify_mfa(access_token: bank[:mfa][:access_token], answer: 'test_answer')
 
     assert bank[:success]
@@ -307,7 +312,26 @@ end
     nodes = @user_client.nodes.all
     escrow_node = nodes[:nodes].select { |n| n[:type] == 'SYNAPSE-US' }.first
 
-    transaction = @user_client.send_money(from: bank_node[:_id], to: escrow_node[:_id], to_node_type: 'SYNAPSE-US', amount: 2.00, currency: 'USD', ip_address: '192.168.0.1', supp_id: '123')
+    transaction = @user_client.send_money(
+      from: bank_node[:_id],
+      to: escrow_node[:_id],
+      to_node_type: 'SYNAPSE-US',
+      amount: 2.00,
+      currency: 'USD',
+      ip_address: '192.168.0.1',
+      extra: {
+        supp_id: '123'
+      },
+      fees: [
+        {
+          fee: 0.05,
+          note: 'Business Fee',
+          to: {
+            id: '559339aa86c273605ccd35df'
+          }
+        }
+      ]
+    )
 
     refute_predicate transaction[:_id], :empty?
     assert_equal 2.0, transaction[:amount][:amount]
@@ -316,6 +340,7 @@ end
     assert_equal '123', transaction[:extra][:supp_id]
     assert_equal bank_node[:_id], transaction[:from][:id]
     assert_equal escrow_node[:_id], transaction[:to][:id]
+    assert_equal 2, transaction[:fees].size
 
     @user_client.nodes.delete(bank_node[:_id])
   end

@@ -23,10 +23,10 @@ module SynapsePayments
           amount: amount,
           currency: currency
         },
-        extra: {
-          ip: ip_address
-        }.merge(args)
+        extra: (args[:extra] || {}).merge({ ip: ip_address })
       }
+
+      data = data.merge(fees: args[:fees]) if args[:fees]
 
       @client.post(path: "/users/#{@user_id}/nodes/#{@node_id}/trans", oauth_key: @oauth_key, fingerprint: @fingerprint, json: data)
     end
