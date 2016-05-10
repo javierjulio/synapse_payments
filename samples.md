@@ -198,7 +198,23 @@ response = user_client.send_money(
   to_node_type: 'SYNAPSE-US', 
   amount: 24.00, 
   currency: 'USD', 
-  ip_address: '192.168.0.1'
+  ip_address: '192.168.0.1',
+)
+```
+
+There are optional parameters that can be specified:
+
+```ruby
+response = user_client.send_money(
+  # ...
+  extra: {
+    supp_id: 'my_id'
+  },
+  fees: [
+    {
+      # ...
+    }
+  ]
 )
 ```
 
