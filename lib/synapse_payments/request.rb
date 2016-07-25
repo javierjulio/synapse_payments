@@ -7,13 +7,14 @@ module SynapsePayments
       'X-Ruby-Platform' => RUBY_PLATFORM
     }
 
-    def initialize(client:, method:, path:, oauth_key: nil, fingerprint: nil, json: nil)
+    def initialize(client:, method:, path:, oauth_key: nil, fingerprint: nil, json: nil, idempotency_key: nil)
       @client = client
       @method = method
       @path = path
       @oauth_key = oauth_key
       @fingerprint = fingerprint
       @json = json
+      @idempotency_key = idempotency_key
     end
 
     def perform
@@ -31,6 +32,11 @@ module SynapsePayments
         'X-SP-USER' => "#{@oauth_key}|#{@fingerprint}",
         'X-SP-USER-IP' => ''
       })
+
+      if !@idempotency_key.nil?
+        headers = headers.merge({ 'X-SP-IDEMPOTENCY-KEY' => @idempotency_key })
+      end
+
       HTTP.headers(headers).accept(:json).timeout(@client.timeout_options)
     end
 

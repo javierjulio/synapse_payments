@@ -53,8 +53,8 @@ module SynapsePayments
       Request.new(client: self, method: :get, path: path, oauth_key: oauth_key, fingerprint: fingerprint).perform
     end
 
-    def post(path:, json:, oauth_key: nil, fingerprint: nil)
-      Request.new(client: self, method: :post, path: path, oauth_key: oauth_key, fingerprint: fingerprint, json: json).perform
+    def post(path:, json:, oauth_key: nil, fingerprint: nil, idempotency_key: nil)
+      Request.new(client: self, method: :post, path: path, oauth_key: oauth_key, fingerprint: fingerprint, json: json, idempotency_key: idempotency_key).perform
     end
 
     def patch(path:, json:, oauth_key: nil, fingerprint: nil)

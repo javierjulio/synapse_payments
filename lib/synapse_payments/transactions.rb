@@ -13,7 +13,7 @@ module SynapsePayments
       @client.get(path: "/users/#{@user_id}/nodes/#{@node_id}/trans", oauth_key: @oauth_key, fingerprint: @fingerprint)
     end
 
-    def create(node_id:, node_type:, amount:, currency:, ip_address:, **args)
+    def create(node_id:, node_type:, amount:, currency:, ip_address:, idempotency_key: nil, **args)
       data = {
         to: {
           type: node_type,
@@ -28,7 +28,7 @@ module SynapsePayments
 
       data = data.merge(fees: args[:fees]) if args[:fees]
 
-      @client.post(path: "/users/#{@user_id}/nodes/#{@node_id}/trans", oauth_key: @oauth_key, fingerprint: @fingerprint, json: data)
+      @client.post(path: "/users/#{@user_id}/nodes/#{@node_id}/trans", oauth_key: @oauth_key, fingerprint: @fingerprint, json: data, idempotency_key: idempotency_key)
     end
 
     def delete(id)

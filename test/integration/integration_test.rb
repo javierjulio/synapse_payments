@@ -68,7 +68,7 @@ class IntegrationTest < Minitest::Test
 
     response = user_client.nodes.all
     assert response[:success]
-    assert_equal 3, response[:nodes].size
+    assert_equal 2, response[:nodes].size
 
     transaction = user_client.send_money(
       from: bank[:nodes].first[:_id],
@@ -309,10 +309,13 @@ class IntegrationTest < Minitest::Test
     response = @user_client.add_bank_account(name: 'John Doe', account_number: '123456786', routing_number: '051000017', category: 'PERSONAL', type: 'CHECKING')
     bank_node = response[:nodes].first
 
+    idempotency_key = Time.now.to_i
+
     nodes = @user_client.nodes.all
     escrow_node = nodes[:nodes].select { |n| n[:type] == 'SYNAPSE-US' }.first
 
     transaction = @user_client.send_money(
+      idempotency_key: idempotency_key,
       from: bank_node[:_id],
       to: escrow_node[:_id],
       to_node_type: 'SYNAPSE-US',
@@ -341,6 +344,21 @@ class IntegrationTest < Minitest::Test
     assert_equal bank_node[:_id], transaction[:from][:id]
     assert_equal escrow_node[:_id], transaction[:to][:id]
     assert_equal 2, transaction[:fees].size
+
+    error = assert_raises(SynapsePayments::Error::Conflict) {
+      transaction = @user_client.send_money(
+        idempotency_key: idempotency_key,
+        from: bank_node[:_id],
+        to: escrow_node[:_id],
+        to_node_type: 'SYNAPSE-US',
+        amount: 2.00,
+        currency: 'USD',
+        ip_address: '192.168.0.1',
+      )
+    }
+
+    assert_kind_of SynapsePayments::Error::ClientError, error
+    assert error.message =~ /Idempotency key already used/i
 
     @user_client.nodes.delete(bank_node[:_id])
   end
