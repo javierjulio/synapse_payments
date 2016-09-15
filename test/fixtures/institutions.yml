@@ -12,7 +12,7 @@ http_interactions:
       Host:
       - synapsepay.com
       User-Agent:
-      - http.rb/0.9.8
+      - http.rb/2.0.3
   response:
     status:
       code: 200
@@ -21,7 +21,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Tue, 22 Dec 2015 20:48:25 GMT
+      - Thu, 15 Sep 2016 00:41:39 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -37,9 +37,10 @@ http_interactions:
       Strict-Transport-Security:
       - max-age=63072000
     body:
-      encoding: UTF-8
+      encoding: ASCII-8BIT
       string: '{"banks": [{"bank_code": "ally", "bank_name": "Ally", "logo": "https://cdn.synapsepay.com/bank_logos/ally.png"},
         {"bank_code": "bofa", "bank_name": "Bank of America", "logo": "https://cdn.synapsepay.com/bank_logos/bofa.png"},
+        {"bank_code": "boftw", "bank_name": "Bank of the West", "logo": "https://cdn.synapsepay.com/bank_logos/bofw.png"},
         {"bank_code": "bbt", "bank_name": "BB&T Bank", "logo": "https://cdn.synapsepay.com/bank_logos/bbt.png"},
         {"bank_code": "capone360", "bank_name": "Capital One 360", "logo": "https://cdn.synapsepay.com/bank_logos/cap360.png"},
         {"bank_code": "schwab", "bank_name": "Charles Schwab", "logo": "https://cdn.synapsepay.com/bank_logos/charles_schwab.png"},
@@ -47,6 +48,7 @@ http_interactions:
         {"bank_code": "citi", "bank_name": "Citibank", "logo": "https://cdn.synapsepay.com/bank_logos/citi.png"},
         {"bank_code": "fidelity", "bank_name": "Fidelity", "logo": "https://cdn.synapsepay.com/bank_logos/fidelity.png"},
         {"bank_code": "firsttennessee", "bank_name": "First Tennessee", "logo": "https://cdn.synapsepay.com/bank_logos/first_tn.png"},
+        {"bank_code": "nfcu", "bank_name": "Navy Federal Credit Union", "logo": "https://cdn.synapsepay.com/bank_logos/nfcu.jpg"},
         {"bank_code": "pnc", "bank_name": "PNC", "logo": "https://cdn.synapsepay.com/bank_logos/pnc.png"},
         {"bank_code": "regions", "bank_name": "Regions", "logo": "https://cdn.synapsepay.com/bank_logos/regionsbank.png"},
         {"bank_code": "suntrust", "bank_name": "SunTrust", "logo": "https://cdn.synapsepay.com/bank_logos/suntrust.png"},
@@ -56,5 +58,5 @@ http_interactions:
         {"bank_code": "wells", "bank_name": "Wells Fargo", "logo": "https://cdn.synapsepay.com/bank_logos/wells_fargo.png"}],
         "success": true}'
     http_version: 
-  recorded_at: Tue, 22 Dec 2015 20:48:25 GMT
-recorded_with: VCR 2.9.3
+  recorded_at: Thu, 15 Sep 2016 00:41:39 GMT
+recorded_with: VCR 3.0.3
