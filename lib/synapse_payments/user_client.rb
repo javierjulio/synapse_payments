@@ -79,7 +79,7 @@ module SynapsePayments
     # @param month [String]
     # @param year [String]
     # @param address_street [String]
-    # @param address_subdivision [String]
+    # @param address_subdivision [String] (state or equivalent)
     # @param address_postal_code [String]
     # @param country_code [String] The country code in ISO format e.g. US
     # @param (optional) virtual_docs [Array of Hashes]
@@ -88,11 +88,9 @@ module SynapsePayments
       # [{document_value: String, document_type: String}]
     # @param (optional) social_docs [Array of Hashes]
       # [{document_value: String, document_type: String}]
-
-    # @param document_type [String] Acceptable document types: SSN, PASSPORT, DRIVERS_LICENSE, PERSONAL_IDENTIFICATION, NONE
-    # @param document_value [String]
+        # Acceptable document types: SSN, PASSPORT, DRIVERS_LICENSE, PERSONAL_IDENTIFICATION, NONE
     # @return [Hash]
-    def add_document_2(email:, phone_number:, ip:, name:, aka:, entity_type:, entity_scope:, day:, month:, year:, address_street:, address_city:, address_subdivision:, address_postal_code:, address_country_code:, **documents)
+    def add_documents(email:, phone_number:, ip:, name:, aka:, entity_type:, entity_scope:, day:, month:, year:, address_street:, address_city:, address_subdivision:, address_postal_code:, address_country_code:, **documents)
       data = {
         documents: [{
           email: email,

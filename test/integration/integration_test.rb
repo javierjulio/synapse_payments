@@ -161,6 +161,96 @@ class IntegrationTest < Minitest::Test
     refute_predicate user[:_id], :empty?
   end
 
+  def test_add_documents_successful
+    virtual_docs = [{
+        'document_value': '111-111-2222',
+        'document_type': 'SSN'
+    }]
+    physical_docs = [{
+        'document_value': 'data:text/csv;base64,SUQs==',
+        'document_type': 'GOVT_ID'
+      },
+      {
+        'document_value': 'data:text/csv;base64,SUQs==',
+        'document_type': 'SELFIE'
+    }]
+    social_docs = [{
+      'document_value': 'https://www.facebook.com/sankaet',
+      'document_type': 'FACEBOOK'
+    }]
+
+    user = @user_client.add_documents(
+      email: 'test@test.com',
+      phone_number: '5555555555',
+      ip: '127.0.0.1',
+      name: 'John Doe',
+      aka: 'Johnie Doe',
+      entity_type: 'M',
+      entity_scope: 'Arts & Entertainment',
+      day: 14,
+      month: 3,
+      year: 1970,
+      address_street: '1 Infinite Loop',
+      address_city: 'Cupertino',
+      address_subdivision: 'CA',
+      address_postal_code: '95014',
+      address_country_code: 'US',
+      virtual_docs: virtual_docs,
+      physical_docs: physical_docs,
+      social_docs: social_docs
+    )
+
+    refute_predicate user[:_id], :empty?
+  end
+
+  # def test_add_documents_with_kba_answer
+  #   response = @user_client.add_document(
+  #     birthdate: Date.parse('1970/3/14'),
+  #     first_name: 'John',
+  #     last_name: 'Doe',
+  #     street: '1 Infinite Loop',
+  #     postal_code: '95014',
+  #     country_code: 'US',
+  #     document_type: 'SSN',
+  #     document_value: '3333'
+  #   )
+
+  #   user = @user_client.answer_kba(
+  #     question_set_id: response[:question_set][:id],
+  #     answers: [
+  #       { question_id: 1, answer_id: 1 },
+  #       { question_id: 2, answer_id: 1 },
+  #       { question_id: 3, answer_id: 1 },
+  #       { question_id: 4, answer_id: 1 },
+  #       { question_id: 5, answer_id: 1 }
+  #     ]
+  #   )
+  # end
+
+  # def test_add_documents_failure_with_attached_photo_id
+  #   begin
+  #     response = @user_client.add_document(
+  #       birthdate: Date.parse('1970/3/14'),
+  #       first_name: 'John',
+  #       last_name: 'Doe',
+  #       street: '1 Infinite Loop',
+  #       postal_code: '95014',
+  #       country_code: 'US',
+  #       document_type: 'SSN',
+  #       document_value: '1111'
+  #     )
+  #   rescue SynapsePayments::Error::Conflict => error
+  #     # no identity found, validation not possible, submit photo ID
+  #   end
+
+  #   file_contents = File.read(fixture_path('image.png'))
+  #   payload_data = "data:image/png;base64,#{Base64.encode64(file_contents).gsub(/\n/, '')}"
+
+  #   user = @user_client.update(doc: { attachment: payload_data })
+
+  #   refute_predicate user[:_id], :empty?
+  # end
+
   def test_add_bank_account_with_verified_micro_deposit
     account_number = Time.now.to_i
 
