@@ -33,6 +33,9 @@ module SynapsePayments
       @client.patch(path: "/users/#{@user_id}", oauth_key: @oauth_key, fingerprint: @fingerprint, json: data)
     end
 
+
+
+    # This style of adding docs is deprecated
     # Adds a virtual document for KYC
     #
     # @param birthdate [Date]
@@ -58,6 +61,59 @@ module SynapsePayments
           document_type: document_type,
           document_value: document_value
         }
+      }
+
+      @client.patch(path: "/users/#{@user_id}", oauth_key: @oauth_key, fingerprint: @fingerprint, json: data)
+    end
+
+    # Adds multiple virtual/physical/social documents
+    #
+    # @param email [String]
+    # @param phone_Number [String]
+    # @param ip [String]
+    # @param name [String] "First Last"
+    # @param aka [String] can be same as name or DBA if business
+    # @param entity_type [String] gender if personal or corp type if business
+    # @param entity_scope [String] profession or industry
+    # @param day [String]
+    # @param month [String]
+    # @param year [String]
+    # @param address_street [String]
+    # @param address_subdivision [String]
+    # @param address_postal_code [String]
+    # @param country_code [String] The country code in ISO format e.g. US
+    # @param (optional) virtual_docs [Array of Hashes]
+      # [{document_value: String, document_type: String}]
+    # @param (optional) physical_docs [Array of Hashes]
+      # [{document_value: String, document_type: String}]
+    # @param (optional) social_docs [Array of Hashes]
+      # [{document_value: String, document_type: String}]
+
+    # @param document_type [String] Acceptable document types: SSN, PASSPORT, DRIVERS_LICENSE, PERSONAL_IDENTIFICATION, NONE
+    # @param document_value [String]
+    # @return [Hash]
+    def add_document_2(email:, phone_number:, ip:, name:, aka:, entity_type:, entity_scope:, day:, month:, year:, address_street:, address_city:, address_subdivision:, address_postal_code:, address_country_code:, **documents)
+      data = {
+        documents: [{
+          email: email,
+          phone_number: phone_number,
+          ip: ip,
+          name: name,
+          alias: aka,
+          entity_type: entity_type,
+          entity_scope: entity_scope,
+          day: day,
+          month: month,
+          year: year,
+          address_street: address_street,
+          address_city: address_city,
+          address_subdivision: address_subdivision,
+          address_postal_code: address_postal_code,
+          address_country_code: address_country_code,
+          virtual_docs: documents[:virtual_docs],
+          physical_docs: documents[:physical_docs],
+          social_docs: documents[:social_docs]
+        }]
       }
 
       @client.patch(path: "/users/#{@user_id}", oauth_key: @oauth_key, fingerprint: @fingerprint, json: data)
