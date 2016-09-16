@@ -33,9 +33,7 @@ module SynapsePayments
       @client.patch(path: "/users/#{@user_id}", oauth_key: @oauth_key, fingerprint: @fingerprint, json: data)
     end
 
-
-
-    # This style of adding docs is deprecated
+    # This style of adding docs is deprecated in favor of #add_documents
     # Adds a virtual document for KYC
     #
     # @param birthdate [Date]
@@ -88,7 +86,7 @@ module SynapsePayments
       # [{document_value: String, document_type: String}]
     # @param (optional) social_docs [Array of Hashes]
       # [{document_value: String, document_type: String}]
-        # Acceptable document types: SSN, PASSPORT, DRIVERS_LICENSE, PERSONAL_IDENTIFICATION, NONE
+    # Acceptable document types: https://docs.synapsepay.com/docs/user-resources#customer-identification-program-cip--know-your-cus
     # @return [Hash]
     def add_documents(email:, phone_number:, ip:, name:, aka:, entity_type:, entity_scope:, day:, month:, year:, address_street:, address_city:, address_subdivision:, address_postal_code:, address_country_code:, **args)
       data = {
@@ -118,6 +116,7 @@ module SynapsePayments
       @client.patch(path: "/users/#{@user_id}", oauth_key: @oauth_key, fingerprint: @fingerprint, json: data)
     end
 
+    # this is deprecated in favor of #add_documents + #update_user w/ answers in payload
     def answer_kba(question_set_id:, answers:)
       data = {
         doc: {
@@ -130,30 +129,25 @@ module SynapsePayments
     end
 
 
-    # Updates multiple virtual/physical/social documents (including KBA verification for virtual)
+    # Updates multiple virtual/physical/social documents (including KBA answers)
     #
-    # @param documents [Array of Hashes] in this format:
-        # [{
-        #   "id": "abc123",
-        #   "virtual_docs": [{
-        #     "id": "def456",
-        #     "meta": {
-        #         "question_set": {
-        #           "answers": [
-        #               { "question_id": 1, "answer_id": 1 },
-        #               { "question_id": 2, "answer_id": 1 },
-        #               { "question_id": 3, "answer_id": 1 },
-        #               { "question_id": 4, "answer_id": 1 },
-        #               { "question_id": 5, "answer_id": 1 }
-        #             ]
-        #         } 
-        #       }
-        #     }
-        #   ]
-        # }]
-    def update_documents(documents:)
+    # @param documents [Hashes] in this format:
+      # {documents_id:, virtual_doc_id:, answers: [{question_id:, answer_id:}, {question_id:, answer_id:}]
+    def update_documents_with_kba_answers(answers)
+      raise ArgumentError, 'Argument is not a hash' unless answers.is_a? Hash
+
       data = {
-        documents: documents
+        documents: [
+          id: answers[:documents_id],
+          virtual_docs: [{
+            id: answers[:virtual_doc_id],
+            meta: {
+              question_set: {
+                answers: answers[:answers]
+              }
+            }
+          }]
+        ]
       }
 
       @client.patch(path: "/users/#{@user_id}", oauth_key: @oauth_key, fingerprint: @fingerprint, json: data)

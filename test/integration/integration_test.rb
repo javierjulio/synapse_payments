@@ -203,7 +203,7 @@ class IntegrationTest < Minitest::Test
     refute_predicate user[:_id], :empty?
   end
 
-  def test_add_documents_with_kba_answer
+  def test_add_documents_with_kba_answers
       virtual_docs = [{
           'document_value': '111-111-3333',
           'document_type': 'SSN'
@@ -235,28 +235,18 @@ class IntegrationTest < Minitest::Test
       documents_id = documents[:id]
       virtual_doc_id = kba_doc[:id]
 
-      user = @user_client.update_documents(
-        documents: [
-          {
-            id: documents_id,
-            virtual_docs: [{
-              id: virtual_doc_id,
-              meta: {
-                question_set: {
-                  answers: [
-                      { question_id: 1, answer_id: 1 },
-                      { question_id: 2, answer_id: 1 },
-                      { question_id: 3, answer_id: 1 },
-                      { question_id: 4, answer_id: 1 },
-                      { question_id: 5, answer_id: 1 }
-                    ]
-                  } 
-                }
-              }
-            ]
-          }
-        ]
-      )
+      data = {
+        documents_id: documents_id,
+        virtual_doc_id: virtual_doc_id, 
+        answers: [
+          { question_id: 1, answer_id: 1 },
+          { question_id: 2, answer_id: 1 },
+          { question_id: 3, answer_id: 1 },
+          { question_id: 4, answer_id: 1 },
+          { question_id: 5, answer_id: 1 }
+        ]}
+
+      user = @user_client.update_documents_with_kba_answers(data)
   end
 
   # def test_add_documents_failure_with_attached_photo_id
