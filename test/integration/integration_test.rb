@@ -203,29 +203,61 @@ class IntegrationTest < Minitest::Test
     refute_predicate user[:_id], :empty?
   end
 
-  # def test_add_documents_with_kba_answer
-  #   response = @user_client.add_document(
-  #     birthdate: Date.parse('1970/3/14'),
-  #     first_name: 'John',
-  #     last_name: 'Doe',
-  #     street: '1 Infinite Loop',
-  #     postal_code: '95014',
-  #     country_code: 'US',
-  #     document_type: 'SSN',
-  #     document_value: '3333'
-  #   )
+  def test_add_documents_with_kba_answer
+      virtual_docs = [{
+          'document_value': '111-111-3333',
+          'document_type': 'SSN'
+      }]
 
-  #   user = @user_client.answer_kba(
-  #     question_set_id: response[:question_set][:id],
-  #     answers: [
-  #       { question_id: 1, answer_id: 1 },
-  #       { question_id: 2, answer_id: 1 },
-  #       { question_id: 3, answer_id: 1 },
-  #       { question_id: 4, answer_id: 1 },
-  #       { question_id: 5, answer_id: 1 }
-  #     ]
-  #   )
-  # end
+      response = @user_client.add_documents(
+        email: 'test@test.com',
+        phone_number: '5555555555',
+        ip: '127.0.0.1',
+        name: 'John Doe',
+        aka: 'Johnie Doe',
+        entity_type: 'M',
+        entity_scope: 'Arts & Entertainment',
+        day: 14,
+        month: 3,
+        year: 1970,
+        address_street: '1 Infinite Loop',
+        address_city: 'Cupertino',
+        address_subdivision: 'CA',
+        address_postal_code: '95014',
+        address_country_code: 'US',
+        virtual_docs: virtual_docs
+      )
+
+      # this could be improved. selects the most recently submitted set of documents,
+      # under assumption that those contain the KBA problem.
+      documents = response[:documents][-1]
+      kba_doc = documents[:virtual_docs].find {|doc| doc[:document_type] == 'SSN'}
+      documents_id = documents[:id]
+      virtual_doc_id = kba_doc[:id]
+
+      user = @user_client.update_documents(
+        documents: [
+          {
+            id: documents_id,
+            virtual_docs: [{
+              id: virtual_doc_id,
+              meta: {
+                question_set: {
+                  answers: [
+                      { question_id: 1, answer_id: 1 },
+                      { question_id: 2, answer_id: 1 },
+                      { question_id: 3, answer_id: 1 },
+                      { question_id: 4, answer_id: 1 },
+                      { question_id: 5, answer_id: 1 }
+                    ]
+                  } 
+                }
+              }
+            ]
+          }
+        ]
+      )
+  end
 
   # def test_add_documents_failure_with_attached_photo_id
   #   begin
@@ -395,6 +427,7 @@ class IntegrationTest < Minitest::Test
     @user_client.nodes.delete(bank[:nodes].first[:_id])
   end
 
+  # only works if the user_id has a SYNAPSE-US node already
   def test_sending_money
     response = @user_client.add_bank_account(name: 'John Doe', account_number: '123456786', routing_number: '051000017', category: 'PERSONAL', type: 'CHECKING')
     bank_node = response[:nodes].first

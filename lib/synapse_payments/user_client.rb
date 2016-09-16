@@ -90,7 +90,7 @@ module SynapsePayments
       # [{document_value: String, document_type: String}]
         # Acceptable document types: SSN, PASSPORT, DRIVERS_LICENSE, PERSONAL_IDENTIFICATION, NONE
     # @return [Hash]
-    def add_documents(email:, phone_number:, ip:, name:, aka:, entity_type:, entity_scope:, day:, month:, year:, address_street:, address_city:, address_subdivision:, address_postal_code:, address_country_code:, **documents)
+    def add_documents(email:, phone_number:, ip:, name:, aka:, entity_type:, entity_scope:, day:, month:, year:, address_street:, address_city:, address_subdivision:, address_postal_code:, address_country_code:, **args)
       data = {
         documents: [{
           email: email,
@@ -107,12 +107,13 @@ module SynapsePayments
           address_city: address_city,
           address_subdivision: address_subdivision,
           address_postal_code: address_postal_code,
-          address_country_code: address_country_code,
-          virtual_docs: documents[:virtual_docs],
-          physical_docs: documents[:physical_docs],
-          social_docs: documents[:social_docs]
+          address_country_code: address_country_code
         }]
       }
+      document_body = data[:documents][0]
+      document_body[:virtual_docs] = args[:virtual_docs] if args[:virtual_docs]
+      document_body[:physical_docs] = args[:physical_docs] if args[:physical_docs]
+      document_body[:social_docs] = args[:social_docs] if args[:physical_docs]
 
       @client.patch(path: "/users/#{@user_id}", oauth_key: @oauth_key, fingerprint: @fingerprint, json: data)
     end
@@ -128,7 +129,37 @@ module SynapsePayments
       @client.patch(path: "/users/#{@user_id}", oauth_key: @oauth_key, fingerprint: @fingerprint, json: data)
     end
 
-    # Adds a bank account by creating a node of node type ACH-US.
+
+    # Updates multiple virtual/physical/social documents (including KBA verification for virtual)
+    #
+    # @param documents [Array of Hashes] in this format:
+        # [{
+        #   "id": "abc123",
+        #   "virtual_docs": [{
+        #     "id": "def456",
+        #     "meta": {
+        #         "question_set": {
+        #           "answers": [
+        #               { "question_id": 1, "answer_id": 1 },
+        #               { "question_id": 2, "answer_id": 1 },
+        #               { "question_id": 3, "answer_id": 1 },
+        #               { "question_id": 4, "answer_id": 1 },
+        #               { "question_id": 5, "answer_id": 1 }
+        #             ]
+        #         } 
+        #       }
+        #     }
+        #   ]
+        # }]
+    def update_documents(documents:)
+      data = {
+        documents: documents
+      }
+
+      @client.patch(path: "/users/#{@user_id}", oauth_key: @oauth_key, fingerprint: @fingerprint, json: data)
+    end
+
+    # Adds a bank account by creating a node of node type ACH-US using acct/routing number
     #
     # @param name [String] the name of the account holder
     # @param account_number [String]
