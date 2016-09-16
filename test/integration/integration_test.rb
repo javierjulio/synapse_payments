@@ -249,30 +249,6 @@ class IntegrationTest < Minitest::Test
       user = @user_client.update_documents_with_kba_answers(data)
   end
 
-  # def test_add_documents_failure_with_attached_photo_id
-  #   begin
-  #     response = @user_client.add_document(
-  #       birthdate: Date.parse('1970/3/14'),
-  #       first_name: 'John',
-  #       last_name: 'Doe',
-  #       street: '1 Infinite Loop',
-  #       postal_code: '95014',
-  #       country_code: 'US',
-  #       document_type: 'SSN',
-  #       document_value: '1111'
-  #     )
-  #   rescue SynapsePayments::Error::Conflict => error
-  #     # no identity found, validation not possible, submit photo ID
-  #   end
-
-  #   file_contents = File.read(fixture_path('image.png'))
-  #   payload_data = "data:image/png;base64,#{Base64.encode64(file_contents).gsub(/\n/, '')}"
-
-  #   user = @user_client.update(doc: { attachment: payload_data })
-
-  #   refute_predicate user[:_id], :empty?
-  # end
-
   def test_add_bank_account_with_verified_micro_deposit
     account_number = Time.now.to_i
 
