@@ -20,7 +20,6 @@ module SynapsePayments
         phone_numbers: phone.is_a?(Array) ? phone : [phone],
         legal_names: name.is_a?(Array) ? name : [name],
         extra: {
-          note: args[:note],
           supp_id: args[:supp_id],
           is_business: is_business
         }
