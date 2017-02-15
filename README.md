@@ -1,3 +1,7 @@
+# DEPRECATED
+
+This is no longer supported or used since SynapsePay has incorporated these changes (mostly the detailed integration tests) into their [own official Ruby SDK](https://github.com/synapsepay/SynapsePayRest-Ruby) which has improved substantially. I'm not interested in doing more development for new or updated features so I've transitioned to using their SDK while also [making various contributions](https://github.com/synapsepay/SynapsePayRest-Ruby/pulls?q=is%3Apr+is%3Aclosed+author%3Ajavierjulio).
+
 # The SynapsePayments Ruby Gem
 
 A tested Ruby interface to the [SynapsePay v3 API](http://docs.synapsepay.com/v3.1). Note: Requires **Ruby 2.1 and up**. Not all API actions are supported. Find out more in the TODO section.
