@@ -55,6 +55,11 @@ Check out [samples.md](samples.md) to review how to use this library.
 * consider creating a `Response` object wrapper
 * clean up object/folder structure
 * reorganize integration tests
+* integration test ```test_sending_money``` does not create a SYNAPSE_US account before trying to access it
+* probably need to create document classes to refactor new KYC methods in UserClient
+* enable creating other account types besides ACH-US
+* HMAC signature validation
+* autogenerate fingerprint from client_id/client_secret
 
 ### Tests
 

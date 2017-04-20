@@ -1,0 +1,159 @@
+---
+http_interactions:
+- request:
+    method: patch
+    uri: https://sandbox.synapsepay.com/api/3/users/57db401286c2734d54c9ca36
+    body:
+      encoding: UTF-8
+      string: '{"documents":[{"email":"test@test.com","phone_number":"5555555555","ip":"127.0.0.1","name":"John
+        Doe","alias":"Johnie Doe","entity_type":"M","entity_scope":"Arts & Entertainment","day":14,"month":3,"year":1970,"address_street":"1
+        Infinite Loop","address_city":"Cupertino","address_subdivision":"CA","address_postal_code":"95014","address_country_code":"US","virtual_docs":[{"document_value":"111-111-3333","document_type":"SSN"}]}]}'
+    headers:
+      User-Agent:
+      - SynapsePaymentsRubyGem/0.10.0
+      X-Ruby-Version:
+      - 2.3.1
+      X-Ruby-Platform:
+      - x86_64-darwin15
+      X-Sp-Gateway:
+      - client_id|client_secret
+      X-Sp-User:
+      - oauth_key|
+      X-Sp-User-Ip:
+      - ''
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Content-Type:
+      - application/json; charset=UTF-8
+      Host:
+      - sandbox.synapsepay.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Fri, 16 Sep 2016 00:45:00 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - close
+      Vary:
+      - Accept
+      X-Frame-Options:
+      - ALLOWALL
+      Strict-Transport-Security:
+      - max-age=63072000
+    body:
+      encoding: ASCII-8BIT
+      string: '{"_id": "57db401286c2734d54c9ca36", "_links": {"self": {"href": "https://sandbox.synapsepay.com/api/3/users/57db401286c2734d54c9ca36"}},
+        "client": {"id": 1841, "name": "Steven Broderick"}, "doc_status": {"physical_doc":
+        "MISSING|INVALID", "virtual_doc": "MISSING|INVALID"}, "documents": [{"id":
+        "a2bcdccfb7189fbae5f4025b02fd12acf6e5cd0f4e9aaa840dff2031dfd2e1af", "name":
+        "John Doe", "permission_scope": "UNVERIFIED", "physical_docs": [], "social_docs":
+        [{"document_type": "EMAIL", "id": "2c45158f6431ca874bbe82f63d5905567854dde4d8b81539944e5779e5eee741",
+        "last_updated": 1473986698541, "status": "SUBMITTED|VALID"}, {"document_type":
+        "PHONE_NUMBER", "id": "9308b3863913f1230741c13bf17990b260d16f466167395f48e91f58cf0d4851",
+        "last_updated": 1473986698903, "status": "SUBMITTED|VALID"}], "virtual_docs":
+        [{"document_type": "SSN", "id": "6c1c7755955cbfa611b37002148b3c92d7be293a7523230f281395c395b7b1c7",
+        "last_updated": 1473986699257, "meta": {"question_set": {"id": "55fa4a546631650003000619",
+        "person_id": "55fa4a546631650003000619", "questions": [{"answers": [{"answer":
+        "Julian", "id": 1}, {"answer": "Nathan", "id": 2}, {"answer": "Jason", "id":
+        3}, {"answer": "Evan", "id": 4}, {"answer": "None Of The Above", "id": 5}],
+        "id": 1, "question": "Which one of the following adult individuals is most
+        closely associated with you?"}, {"answers": [{"answer": "904", "id": 1}, {"answer":
+        "812", "id": 2}, {"answer": "336", "id": 3}, {"answer": "832", "id": 4}, {"answer":
+        "None Of The Above", "id": 5}], "id": 2, "question": "Which one of the following
+        area codes is associated with you?"}, {"answers": [{"answer": "Boone", "id":
+        1}, {"answer": "Jasper", "id": 2}, {"answer": "Schoharie", "id": 3}, {"answer":
+        "Sangamon", "id": 4}, {"answer": "None Of The Above", "id": 5}], "id": 3,
+        "question": "Which one of the following counties is associated with you?"},
+        {"answers": [{"answer": "49230", "id": 1}, {"answer": "49209", "id": 2}, {"answer":
+        "49268", "id": 3}, {"answer": "49532", "id": 4}, {"answer": "None Of The Above",
+        "id": 5}], "id": 4, "question": "Which one of the following zip codes is associated
+        with you?"}, {"answers": [{"answer": "123 Main St", "id": 1}, {"answer": "52
+        Canandaigua Rd", "id": 2}, {"answer": "309 Colver Rd", "id": 3}, {"answer":
+        "467 Meridian Rd", "id": 4}, {"answer": "None Of The Above", "id": 5}], "id":
+        5, "question": "Which one of the following addresses is associated with you?"}]}},
+        "status": "SUBMITTED|MFA_PENDING"}]}], "extra": {"cip_tag": 1, "date_joined":
+        1473986578571, "extra_security": true, "is_business": false, "supp_id": "5303f4ddb4e7b810bf000173"},
+        "is_hidden": false, "legal_names": ["John Doe"], "logins": [{"email": "john@test.com",
+        "scope": "READ_AND_WRITE"}], "permission": "UNVERIFIED", "phone_numbers":
+        ["123-456-8790"], "photos": [], "refresh_token": "refresh-5e39d3a3-eff2-49da-b199-8c14d5b23d83"}'
+    http_version: 
+  recorded_at: Fri, 16 Sep 2016 00:45:00 GMT
+- request:
+    method: patch
+    uri: https://sandbox.synapsepay.com/api/3/users/57db401286c2734d54c9ca36
+    body:
+      encoding: UTF-8
+      string: '{"documents":[{"id":"a2bcdccfb7189fbae5f4025b02fd12acf6e5cd0f4e9aaa840dff2031dfd2e1af","virtual_docs":[{"id":"6c1c7755955cbfa611b37002148b3c92d7be293a7523230f281395c395b7b1c7","meta":{"question_set":{"answers":[{"question_id":1,"answer_id":1},{"question_id":2,"answer_id":1},{"question_id":3,"answer_id":1},{"question_id":4,"answer_id":1},{"question_id":5,"answer_id":1}]}}}]}]}'
+    headers:
+      User-Agent:
+      - SynapsePaymentsRubyGem/0.10.0
+      X-Ruby-Version:
+      - 2.3.1
+      X-Ruby-Platform:
+      - x86_64-darwin15
+      X-Sp-Gateway:
+      - client_id|client_secret
+      X-Sp-User:
+      - oauth_key|fingerprint
+      X-Sp-User-Ip:
+      - ''
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Content-Type:
+      - application/json; charset=UTF-8
+      Host:
+      - sandbox.synapsepay.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Fri, 16 Sep 2016 00:45:11 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - close
+      Vary:
+      - Accept
+      X-Frame-Options:
+      - ALLOWALL
+      Strict-Transport-Security:
+      - max-age=63072000
+    body:
+      encoding: ASCII-8BIT
+      string: '{"_id": "57db401286c2734d54c9ca36", "_links": {"self": {"href": "https://sandbox.synapsepay.com/api/3/users/57db401286c2734d54c9ca36"}},
+        "client": {"id": 1841, "name": "Steven Broderick"}, "doc_status": {"physical_doc":
+        "MISSING|INVALID", "virtual_doc": "SUBMITTED|VALID"}, "documents": [{"id":
+        "a2bcdccfb7189fbae5f4025b02fd12acf6e5cd0f4e9aaa840dff2031dfd2e1af", "name":
+        "John Doe", "permission_scope": "RECEIVE|1000|DAILY", "physical_docs": [],
+        "social_docs": [{"document_type": "EMAIL", "id": "2c45158f6431ca874bbe82f63d5905567854dde4d8b81539944e5779e5eee741",
+        "last_updated": 1473986698541, "status": "SUBMITTED|VALID"}, {"document_type":
+        "PHONE_NUMBER", "id": "9308b3863913f1230741c13bf17990b260d16f466167395f48e91f58cf0d4851",
+        "last_updated": 1473986698903, "status": "SUBMITTED|VALID"}], "virtual_docs":
+        [{"document_type": "SSN", "id": "6c1c7755955cbfa611b37002148b3c92d7be293a7523230f281395c395b7b1c7",
+        "last_updated": 1473986709206, "status": "SUBMITTED|VALID"}]}], "extra": {"cip_tag":
+        1, "date_joined": 1473986578571, "extra_security": true, "is_business": false,
+        "supp_id": "5303f4ddb4e7b810bf000173"}, "is_hidden": false, "legal_names":
+        ["John Doe"], "logins": [{"email": "john@test.com", "scope": "READ_AND_WRITE"}],
+        "permission": "RECEIVE", "phone_numbers": ["123-456-8790"], "photos": [],
+        "refresh_token": "refresh-5e39d3a3-eff2-49da-b199-8c14d5b23d83"}'
+    http_version: 
+  recorded_at: Fri, 16 Sep 2016 00:45:11 GMT
+recorded_with: VCR 3.0.3

@@ -65,7 +65,7 @@ class ClientTest < Minitest::Test
     VCR.use_cassette('institutions') do
       response = test_client.institutions
 
-      assert_equal 16, response.size
+      assert_equal 18, response.size
       assert_equal 'Ally', response[0][:bank_name]
       assert_equal 'Bank of America', response[1][:bank_name]
     end

@@ -1,0 +1,79 @@
+---
+http_interactions:
+- request:
+    method: patch
+    uri: https://sandbox.synapsepay.com/api/3/users/57daeb3686c2734b4c654c63
+    body:
+      encoding: UTF-8
+      string: '{"documents":[{"email":"test@test.com","phone_number":"5555555555","ip":"127.0.0.1","name":"John
+        Doe","alias":"Johnie Doe","entity_type":"M","entity_scope":"Arts & Entertainment","day":14,"month":3,"year":1970,"address_street":"1
+        Infinite Loop","address_city":"Cupertino","address_subdivision":"CA","address_postal_code":"95014","address_country_code":"US","virtual_docs":[{"document_value":"111-111-2222","document_type":"SSN"}],"physical_docs":[{"document_value":"data:text/csv;base64,SUQs==","document_type":"GOVT_ID"},{"document_value":"data:text/csv;base64,SUQs==","document_type":"SELFIE"}],"social_docs":[{"document_value":"https://www.facebook.com/sankaet","document_type":"FACEBOOK"}]}]}'
+    headers:
+      User-Agent:
+      - SynapsePaymentsRubyGem/0.10.0
+      X-Ruby-Version:
+      - 2.3.1
+      X-Ruby-Platform:
+      - x86_64-darwin15
+      X-Sp-Gateway:
+      - client_id|client_secret
+      X-Sp-User:
+      - oauth_key|
+      X-Sp-User-Ip:
+      - ''
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Content-Type:
+      - application/json; charset=UTF-8
+      Host:
+      - sandbox.synapsepay.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Fri, 16 Sep 2016 00:35:01 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - close
+      Vary:
+      - Accept
+      X-Frame-Options:
+      - ALLOWALL
+      Strict-Transport-Security:
+      - max-age=63072000
+    body:
+      encoding: ASCII-8BIT
+      string: '{"_id": "57daeb3686c2734b4c654c63", "_links": {"self": {"href": "https://sandbox.synapsepay.com/api/3/users/57daeb3686c2734b4c654c63"}},
+        "client": {"id": 1841, "name": "Steven Broderick"}, "doc_status": {"physical_doc":
+        "SUBMITTED|VALID", "virtual_doc": "SUBMITTED|VALID"}, "documents": [{"id":
+        "26124e77e9e0d1f4e961ec10e28629a5024e5ab3ec21b6171563971f01761831", "name":
+        "John Doe", "permission_scope": "SEND|RECEIVE|1000|DAILY", "physical_docs":
+        [{"document_type": "GOVT_ID", "id": "ef89088b9e24b55810299d5ef5ad98ecfb9308f00a31fcf092cb7013fc9c1937",
+        "last_updated": 1473986099371, "status": "SUBMITTED|REVIEWING"}, {"document_type":
+        "SELFIE", "id": "56bad8ba4099a08f5c6ccf1b10295fb1f71e494014571fb9f4268347b047294b",
+        "last_updated": 1473986099802, "status": "SUBMITTED|REVIEWING"}], "social_docs":
+        [{"document_type": "EMAIL", "id": "2c45158f6431ca874bbe82f63d5905567854dde4d8b81539944e5779e5eee741",
+        "last_updated": 1473986098022, "status": "SUBMITTED|VALID"}, {"document_type":
+        "PHONE_NUMBER", "id": "9308b3863913f1230741c13bf17990b260d16f466167395f48e91f58cf0d4851",
+        "last_updated": 1473986098440, "status": "SUBMITTED|VALID"}, {"document_type":
+        "FACEBOOK", "id": "0c32234c59b71311b0f3057635c206e6a0d39ecef0bc336fe2bb375c92968117",
+        "last_updated": 1473982717812, "status": "SUBMITTED|VALID"}], "virtual_docs":
+        [{"document_type": "SSN", "id": "7cb85697d26e2c1010266fd64a22afd396167ca630a4bad21a9e8fcff865bb1c",
+        "last_updated": 1473986098847, "status": "SUBMITTED|VALID"}]}], "extra": {"cip_tag":
+        1, "date_joined": 1473964854349, "extra_security": true, "is_business": false,
+        "supp_id": "5303f4ddb4e7b810bf000173"}, "is_hidden": false, "legal_names":
+        ["John Doe"], "logins": [{"email": "john@test.com", "scope": "READ_AND_WRITE"}],
+        "permission": "SEND-AND-RECEIVE", "phone_numbers": ["123-456-8790"], "photos":
+        [], "refresh_token": "refresh-0b0326aa-8c27-4df1-8c9b-e63a3d90dba0"}'
+    http_version: 
+  recorded_at: Fri, 16 Sep 2016 00:35:01 GMT
+recorded_with: VCR 3.0.3
